@@ -6,7 +6,7 @@ class ImageMagick {
             gm(inputBuffer)
                 .gravity('South')
                 .trim()
-                .extent(2000, 2000)
+                .extent(300, 300)
                 .background(background)
                 .toBuffer((err, croppedBuffer) => {
                     if (err) {
