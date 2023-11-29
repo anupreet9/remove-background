@@ -122,11 +122,11 @@ app.post('/process-image', async (req, res) => {
 
 // This endpoint combines the smart cropping and the remove of background processes
 app.post('/process', async (req, res) => {
-    const { imageUrl } = req.body;
-    console.log(imageUrl);
+    const { imagePath } = req.body;
+    console.log(imagePath);
 
-    if (!imageUrl) {
-        return res.status(400).json({ error: 'Image URL not provided' });
+    if (!imagePath) {
+        return res.status(400).json({ error: 'Image path not provided' });
     }
 
     /*
@@ -137,11 +137,14 @@ app.post('/process', async (req, res) => {
     */
 
     try {
-        const imageBuffer = await ImageProcessor.fetchImageUrl(imageUrl);
+        // const imageBuffer = await ImageProcessor.fetchImageUrl(imageUrl);
+
+        const imageBuffer = await fs.readFileSync(imagePath);
+        
         const rembgBuffer = await RemBg.removeBackground(imageBuffer, true);
         const croppedBuffer = await ImageMagick.cropBottom(rembgBuffer, 'transparent');
 
-        const imageFileName = ImageProcessor.getNewImageFileName(imageUrl);
+        const imageFileName = ImageProcessor.getNewImageFileName(imagePath);
         const imageFilePath = ImageProcessor.getNewImageFilePath(imageFileName, processedImagesDir);
 
         // Save the cropped image to the specified path
